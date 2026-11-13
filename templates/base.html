@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f5">
+  <title>{% block title %}OfferTrail — Job Application Tracker{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="OfferTrail home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span>offertrail<span class="brand-period">.</span></span>
+      </a>
+      <div class="workspace-label">YOUR SEARCH</div>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <a class="nav-item {% if request.endpoint == 'index' %}is-active{% endif %}" href="{{ url_for('index') }}"><span class="nav-icon" aria-hidden="true">◫</span> Overview</a>
+        <a class="nav-item" href="{{ url_for('index', status='Interview') }}"><span class="nav-icon" aria-hidden="true">◎</span> Interviews</a>
+        <a class="nav-item" href="{{ url_for('export_csv') }}"><span class="nav-icon" aria-hidden="true">↧</span> Export data</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="quote-mark">“</div>
+        <p>Small steps forward are still progress.</p>
+        <div class="sidebar-caption">YOUR SEARCH, YOUR PACE</div>
+      </div>
+    </aside>
+    <main class="main-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer class="site-footer"><span>Made for the long game.</span><a href="{{ url_for('health') }}">System status</a></footer>
+    </main>
+  </div>
+</body>
+</html>

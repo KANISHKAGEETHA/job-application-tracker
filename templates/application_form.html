@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set is_edit = application is not none %}
+{% block title %}{% if is_edit %}Edit application{% else %}Add application{% endif %} — OfferTrail{% endblock %}
+{% block content %}
+<header class="topbar"><div class="breadcrumb"><a href="{{ url_for('index') }}">Overview</a><span class="crumb-slash">/</span><strong>{% if is_edit %}Edit application{% else %}New application{% endif %}</strong></div><a class="topbar-link" href="{{ url_for('index') }}">← Back to overview</a></header>
+<section class="form-page-head"><p class="eyebrow">MAKE ROOM FOR WHAT’S NEXT</p><h1>{% if is_edit %}Update the details.{% else %}Add an application.{% endif %}</h1><p>Keep the useful details together so your next step is easy to find.</p></section>
+<form class="application-form" method="post" action="{{ form_action }}">
+  <div class="form-section"><div class="form-section-title"><span class="form-step">01</span><div><h2>The role</h2><p>Start with the basics.</p></div></div>
+    <div class="form-grid">
+      <label class="field"><span>Company <b>*</b></span><input name="company" required maxlength="120" value="{{ application.get('company', '') if application else '' }}" placeholder="e.g. Northstar Studio"></label>
+      <label class="field"><span>Job title <b>*</b></span><input name="role" required maxlength="160" value="{{ application.get('role', '') if application else '' }}" placeholder="e.g. Product Designer"></label>
+      <label class="field"><span>Job posting link</span><input type="url" name="job_url" maxlength="500" value="{{ application.get('job_url', '') if application else '' }}" placeholder="https://..."></label>
+      <label class="field"><span>Location</span><input name="location" maxlength="120" value="{{ application.get('location', '') if application else '' }}" placeholder="City, state, or country"></label>
+      <label class="field"><span>Work setup</span><select name="work_mode">{% for mode in work_modes %}<option value="{{ mode }}" {% if application and application.get('work_mode') == mode %}selected{% endif %}>{{ mode }}</option>{% endfor %}</select></label>
+      <label class="field"><span>Salary / range</span><input name="salary" maxlength="80" value="{{ application.get('salary', '') if application else '' }}" placeholder="Optional"></label>
+    </div>
+  </div>
+  <div class="form-section"><div class="form-section-title"><span class="form-step">02</span><div><h2>Where things stand</h2><p>Capture the current stage and next check-in.</p></div></div>
+    <div class="form-grid">
+      <label class="field"><span>Stage</span><select name="status">{% for stage in statuses %}<option value="{{ stage }}" {% if application and application.get('status') == stage %}selected{% elif not application and stage == 'Applied' %}selected{% endif %}>{{ stage }}</option>{% endfor %}</select></label>
+      <label class="field"><span>Date applied <b>*</b></span><input type="date" name="applied_date" required value="{{ application.get('applied_date', today) if application else today }}"></label>
+      <label class="field"><span>Follow-up date</span><input type="date" name="follow_up_date" value="{{ application.get('follow_up_date', '') if application else '' }}"></label>
+      <label class="field"><span>Contact</span><input name="contact" maxlength="160" value="{{ application.get('contact', '') if application else '' }}" placeholder="Name or email (optional)"></label>
+    </div>
+    <label class="field field-notes"><span>Notes</span><textarea name="notes" rows="5" maxlength="4000" placeholder="Interview notes, people you spoke with, or what to follow up on…">{{ application.get('notes', '') if application else '' }}</textarea><small>Only stored in your local database.</small></label>
+  </div>
+  <div class="form-actions"><a class="button button-quiet" href="{{ url_for('index') }}">Cancel</a><button class="button button-primary" type="submit">{% if is_edit %}Save changes{% else %}Add to tracker{% endif %} <span aria-hidden="true">→</span></button></div>
+</form>
+{% endblock %}
